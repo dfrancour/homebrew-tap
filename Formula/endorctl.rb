@@ -1,12 +1,5 @@
 require 'net/http'
 
-class EndorDownloadStrategy < CurlDownloadStrategy
-  def url
-    versioned_url = $download_url
-    versioned_url
-  end
-end
-
 class Endorctl < Formula
   homepage "https://github.com/endorlabs/homebrew-tap"
   desc "Endor Labs Homebrew Tap"
@@ -16,7 +9,7 @@ class Endorctl < Formula
   livecheck do
     url ENDORCTL_VERSION_URL
     strategy :json do |json|
-      json["ClientVersion"]
+      json["Service"]["Version"]
     end
   end
 
@@ -36,7 +29,7 @@ class Endorctl < Formula
   end
 
   version_json = fetch_version_json
-  version version_json["ClientVersion"]
+  version version_json["Service"]["Version"]
 
   # Assume MacOS, ARM
   use_arch = "arm64"
@@ -48,12 +41,13 @@ class Endorctl < Formula
       $download_sha = version_json["ClientChecksums"]["ARCH_TYPE_MACOS_AMD64"]
     end
   end
+  
+  sha256 $download_sha
 
   $endorctl_file = "endorctl_#{version}_macos_#{use_arch}"
-  $download_url = "https://api.endorlabs.com/download/endorlabs/#{version}/binaries/#{$endorctl_file}"
-
+  $download_url = "https://api.endorlabs.com/download/endorlabs/#{version}/binaries/#{$endorctl_file}" 
   # Download and install
-  url "about:blank", :using => EndorDownloadStrategy  # actual URL determined by download strategy
+  url $download_url
   
   def install
      bin.install "#{$endorctl_file}" => "endorctl"
