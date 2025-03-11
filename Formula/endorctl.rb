@@ -54,7 +54,8 @@ class Endorctl < Formula
 
   # Download and install
   url "about:blank", :using => EndorDownloadStrategy  # actual URL determined by download strategy
-  
+  sha256 $download_sha
+
   def install
      bin.install "#{$endorctl_file}" => "endorctl"
   end
