@@ -6,6 +6,7 @@ class Endorctl < Formula
 
   ENDORCTL_VERSION_URL = "https://api.endorlabs.com/meta/version"
 
+  # Version check logic
   livecheck do
     url ENDORCTL_VERSION_URL
     strategy :json do |json|
@@ -42,12 +43,12 @@ class Endorctl < Formula
     end
   end
   
-  sha256 $download_sha
-
   $endorctl_file = "endorctl_#{version}_macos_#{use_arch}"
   $download_url = "https://api.endorlabs.com/download/endorlabs/#{version}/binaries/#{$endorctl_file}" 
-  # Download and install
+  
+  # Download properties
   url $download_url
+  sha256 $download_sha
   
   def install
      bin.install "#{$endorctl_file}" => "endorctl"
